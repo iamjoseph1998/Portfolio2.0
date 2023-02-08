@@ -15,6 +15,8 @@ class Profile(models.Model):
     phone = models.CharField(max_length=10, validators=[phone_regex])
     address = models.TextField()
     photo = models.ImageField(upload_to='images/')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.email
@@ -22,8 +24,32 @@ class Profile(models.Model):
     def clean(self):
         super().clean()
         if not self.id and Profile.objects.exists():
-            raise ValidationError('You can only add a single profile.')
+            profile = Profile.objects.all().first()
+            raise ValidationError(f'You can only add a single profile. Please edit {profile.first_name} {profile.last_name}\'s profile.')
 
     
     class Meta:
         verbose_name_plural = 'Profile'
+
+
+class Education(models.Model):
+    degree = models.CharField(max_length=200)
+    school = models.CharField('School or University', max_length=200)
+    is_pursuing = models.BooleanField(default=False)
+    start_date = models.DateField()
+    end_date = models.DateField(help_text='Do not add end date if currently pursuing, please tick below pursing')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.degree
+    
+    def clean(self):
+        super().clean()
+        if Education.objects.filter(is_pursuing=True).first():
+            profile = Education.objects.filter(is_pursuing=True).first()
+            raise ValidationError(f'You are currently pursuing {profile.degree}. Cannot pursue two degree\'s at a time.')
+    
+
+    class Meta:
+        verbose_name_plural = 'Education'

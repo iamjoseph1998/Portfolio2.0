@@ -7,4 +7,5 @@ app_name = 'app'
 
 urlpatterns = [
     path('get-profile/', GetProfile.as_view(), name='get-profile'),
+    path('get-education/', GetEducation.as_view(), name='get-education'),
 ]
