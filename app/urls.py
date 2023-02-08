@@ -6,5 +6,5 @@ app_name = 'app'
 
 
 urlpatterns = [
-    path('add-profile/', AddProfile.as_view(), name='add-profile'),
+    path('get-profile/', GetProfile.as_view(), name='get-profile'),
 ]
